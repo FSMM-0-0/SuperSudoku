@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <string>
 
-const int stuID = 9;
 int idx[] = { 1, 4, 7 };
 
 extern FILE *fp;
@@ -18,11 +17,11 @@ extern FILE *puzzle_fp;
 //@Prameter:交换后的行列顺序ord, 第一行的模板映射关系
 //@Return:
 //@Date:208-12-7
-void Board::Output(int ord[2][SIZE], int firstrow[SIZE])
+void Board::Output(int ord[], int firstrow[])
 {
 	for (int i = 1; i <= 9; i++) {
 		for (int j = 1; j <= 9; j++) {
-			chessboard[i][j] = firstrow[modle[ord[1][i]][ord[0][j]] - 'a'];
+			chessboard[i][j] = firstrow[modle[i][ord[j - 1]] - 'a'];
 		}
 	}
 	for (int i = 1; i <= 9; i++) {
@@ -34,57 +33,51 @@ void Board::Output(int ord[2][SIZE], int firstrow[SIZE])
 	Getpuzzle();
 }
 
-//@Author:ZhuJingjing
-//@Description:模板映射表全排列,调用dfs交换行列,生成数独终局
+//@Author:Jingjing Zhu
+//@Description:模板映射表全排列,调用exchange交换行列,生成数独终局
 //@Prameter:
 //@Return:
 //@Date:208-12-7
 void Board::Create()
 {
-	int firstrow[SIZE] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	int firstrow[SIZE] = { 9, 1, 2, 3, 4, 5, 6, 7, 8 };
 	int seq[SIZE] = { 1, 2, 3 ,4, 5, 6, 7, 8, 9};
-	int ord[2][SIZE];
+	int ord[SIZE];
 	do {
-		memset(ord, 0, sizeof(ord));
-		if (Create_dfs(1, seq, ord, firstrow)) break;
+		if (Create_exchange(ord, firstrow)) break;
  	} while (std::next_permutation(firstrow + 1, firstrow + 9));
 }
 
+
 //@Author:ZhuJingjing
-//@Description:dfs交换行列
-//@Prameter:当前dfs到第tmp个交换位(行3列3),交换顺序seq,交换后的顺序ord,模板映射关系firstrow
+//@Description:交换行列生成数独终局
+//@Prameter:交换后的顺序ord,模板映射关系firstrow
 //@Return:是否生成所有终局
-//@Date:208-12-7
-bool Board::Create_dfs(int tmp, int seq[SIZE], int ord[2][SIZE], int firstrow[SIZE])
+//@Date:208-12-8
+bool Board::Create_exchange(int ord[], int firstrow[])
 {
-	if (tmp == 7) {
-		num--;
-		Output(ord, firstrow);
-		if (!num) return true;
-	}
-	else if (tmp == 1 || tmp == 4) {
-		do {
-			for (int i = 0; i <= 2; i++)
-				tmp == 1 ? ord[0][i] = seq[i] : ord[1][i] = seq[i];
-			if (Create_dfs(tmp + 1, seq, ord, firstrow)) return true;
-		} while (std::next_permutation(seq + 1, seq + 2));
-	}
-	else if (tmp == 2 || tmp == 5) {
-		do {
-			for (int i = 3; i <= 5; i++)
-				tmp == 2 ? ord[0][i] = seq[i] : ord[1][i] = seq[i];
-			if (Create_dfs(tmp + 1, seq, ord, firstrow)) return true;
-		} while (std::next_permutation(seq + 3, seq + 5));
-	}
-	else if (tmp == 3 || tmp == 6) {
-		do {
-			for (int i = 6; i <= 8; i++)
-				tmp == 3 ? ord[0][i] = seq[i] : ord[1][i] = seq[i];
-			if (Create_dfs(tmp + 1, seq, ord, firstrow)) return true;
-		} while (std::next_permutation(seq + 6, seq + 8));
+	char per1[2][4] = { "123", "132" },
+		per2[6][4] = { "456", "465", "546", "564", "645", "654" },
+		per3[6][4] = { "789", "798", "879", "897", "978", "987" };
+	for (int i = 0; i < 2; i++) {
+		for (int ii = 0; ii < 3; ii++) ord[ii] = per1[i][ii] - '0';
+
+		for (int j = 0; j < 6; j++) {
+			for (int jj = 0; jj < 3; jj++) ord[jj + 3] = per2[j][jj] - '0';
+
+			for (int k = 0; k < 6; k++) {
+				for (int kk = 0; kk < 3; kk++) ord[kk + 6] = per3[k][kk] - '0';
+
+				Output(ord, firstrow);
+				num--;
+				if (!num)
+					return true;
+			}
+		}
 	}
 	return false;
 }
+
 
 /*
 @Author:ZhuJingjing

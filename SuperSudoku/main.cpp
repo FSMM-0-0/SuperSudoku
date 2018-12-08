@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 	if (strcmp(argv[1], "-c") == 0) {
 		int n = str2int(argv[2]);
 		if (n >= 1) {
-			/*fp = fopen("sudoku.txt", "w");
+			fp = fopen("sudoku.txt", "w");
 			puzzle_fp = fopen("puzzle.txt", "w");
 			
 			if (fp == NULL) {
@@ -48,15 +48,15 @@ int main(int argc, char *argv[])
 			if (puzzle_fp == NULL) {
 				printf("创建puzzle.txt文件失败\n");
 				return -1;
-			}*/
+			}
 
 			Board board(n);
 			board.Create();
 
-			//fclose(fp);
-			//fclose(puzzle_fp);
-			//fp = NULL;
-			//puzzle_fp = NULL;
+			fclose(fp);
+			fclose(puzzle_fp);
+			fp = NULL;
+			puzzle_fp = NULL;
 			printf("生成数独终局成功\n");
 		}
 		else {
@@ -81,17 +81,29 @@ int main(int argc, char *argv[])
 		int puzzle_num = 1;
 		int row = 1;
 
+		bool first = false;
+
 		puzzle.Init();
 		while (!feof(puzzle_fp)) {
 			fgets(line, 1000000, puzzle_fp);
 			if (line[0] == '\n') {
-				puzzle.Solution();
-				puzzle.Output();
-				fprintf(solution_fp, "\n");
-				row = 1;
-				puzzle.Init();
+				first = true;
+				//puzzle.Solution();
+				//fprintf(solution_fp, "%d:\n", ++cnt);
+				//puzzle.Output();
+				//fprintf(solution_fp, "\n");
+				//row = 1;
+				//puzzle.Init();
 			}
 			else {	
+				if (first) {
+					first = false;
+					puzzle.Solution();
+					puzzle.Output();
+					fprintf(solution_fp, "\n");
+					row = 1;
+					puzzle.Init();
+				}
 				puzzle.InitBoard(row, line);
 				row++;
 			}

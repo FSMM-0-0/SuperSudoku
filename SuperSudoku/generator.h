@@ -20,12 +20,12 @@ private:
 		"0fdeighcab",
 		"0ighcabfde"
 	};    
-	void Output(int ord[2][SIZE], int firstrow[SIZE]); //数独终局输出
-	bool Create_dfs(int tmp, int seq[SIZE], int ord[2][SIZE], int firstrow[SIZE]); //数独终局交换生成
+	void Output(int ord[SIZE], int firstrow[SIZE]); //数独终局输出
 	void Getpuzzle(); //生成含空格的puzzle
+	bool Create_exchange(int ord[SIZE], int firstrow[SIZE]); //数独终局列交换
 public:
 	void Create(); //生成数独终局
-	Board(int n = 0) : num(n) {} //构造
+	Board(int n = 0) : num(n) {} 
 };
 
 #endif // !__GENERATOR_H__
