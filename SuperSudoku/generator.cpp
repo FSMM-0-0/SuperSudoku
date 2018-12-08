@@ -3,6 +3,8 @@
 #include <iostream>
 #include <ctime>
 #include <cstdio>
+#include <algorithm>
+#include <string>
 
 const int stuID = 9;
 int idx[] = { 1, 4, 7 };
@@ -10,87 +12,78 @@ int idx[] = { 1, 4, 7 };
 extern FILE *fp;
 extern FILE *puzzle_fp;
 
-/*
-@Author:ZhuJingjing
-@Description:递归生成数独终局
-@Prameter:第k个小矩阵的第tmp个位置
-@Return:
-@Date:208-12-3
-*/
-void Board::Create(int k, int tmp)
+
+//@Author:ZhuJingjing
+//@Description:输出数独终局
+//@Prameter:交换后的行列顺序ord, 第一行的模板映射关系
+//@Return:
+//@Date:208-12-7
+void Board::Output(int ord[2][SIZE], int firstrow[SIZE])
 {
-	if (!num) return;
-	if (k == 10) {
-		if (num) {
-			num--;
-			Output();
+	for (int i = 1; i <= 9; i++) {
+		for (int j = 1; j <= 9; j++) {
+			chessboard[i][j] = firstrow[modle[ord[1][i]][ord[0][j]] - 'a'];
 		}
-		else return;
 	}
-
-	//计算当前填充格的下标
-	int i = idx[(k - 1) / 3] + (tmp - 1) / 3;
-	int j = idx[(k - 1) % 3] + (tmp - 1) % 3;
-
-	//从1到9遍历填充
-	if (k == 1 && tmp == 1) {
-		chessboard[i][j] = stuID;
-		int shift = stuID - 1;
-		sub[k] |= 1 << shift;
-		row[i] |= 1 << shift;
-		column[j] |= 1 << shift;
-		Create(k, tmp + 1);
-	}
-	else {
-		for (int dig = 1; dig <= 9; dig++) {
-			//分别对小矩阵、行、列进行合法判断
-			int shift = dig - 1;
-			if (!((sub[k] >> shift) & 1) && !((row[i] >> shift) & 1) && !((column[j] >> shift) & 1)) {
-				chessboard[i][j] = dig;
-
-				sub[k] |= 1 << shift;
-				row[i] |= 1 << shift;
-				column[j] |= 1 << shift;
-
-				if (tmp == 9) Create(k + 1, 1);
-				else Create(k, tmp + 1);
-
-				sub[k] ^= 1 << shift;
-				row[i] ^= 1 << shift;
-				column[j] ^= 1 << shift;
-			}
-		}
-
-	}
-
-}
-
-Board::Board(int n)
-{
-	num = n;
-	memset(chessboard, 0, sizeof(chessboard));
-	memset(column, 0, sizeof(column));
-	memset(row, 0, sizeof(row));
-	memset(sub, 0, sizeof(sub));
-}
-
-/*
-@Author:ZhuJingjing
-@Description:输出数独终局
-@Prameter:
-@Return:
-@Date:208-12-3
-*/
-void Board::Output()
-{
 	for (int i = 1; i <= 9; i++) {
 		for (int j = 1; j <= 9; j++) {
 			fprintf(fp, "%d%c", chessboard[i][j], j == 9 ? '\n' : ' ');
 		}
 	}
 	if (num) fprintf(fp, "\n");
-
 	Getpuzzle();
+}
+
+//@Author:ZhuJingjing
+//@Description:模板映射表全排列,调用dfs交换行列,生成数独终局
+//@Prameter:
+//@Return:
+//@Date:208-12-7
+void Board::Create()
+{
+	int firstrow[SIZE] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	int seq[SIZE] = { 1, 2, 3 ,4, 5, 6, 7, 8, 9};
+	int ord[2][SIZE];
+	do {
+		memset(ord, 0, sizeof(ord));
+		if (Create_dfs(1, seq, ord, firstrow)) break;
+ 	} while (std::next_permutation(firstrow + 1, firstrow + 9));
+}
+
+//@Author:ZhuJingjing
+//@Description:dfs交换行列
+//@Prameter:当前dfs到第tmp个交换位(行3列3),交换顺序seq,交换后的顺序ord,模板映射关系firstrow
+//@Return:是否生成所有终局
+//@Date:208-12-7
+bool Board::Create_dfs(int tmp, int seq[SIZE], int ord[2][SIZE], int firstrow[SIZE])
+{
+	if (tmp == 7) {
+		num--;
+		Output(ord, firstrow);
+		if (!num) return true;
+	}
+	else if (tmp == 1 || tmp == 4) {
+		do {
+			for (int i = 0; i <= 2; i++)
+				tmp == 1 ? ord[0][i] = seq[i] : ord[1][i] = seq[i];
+			if (Create_dfs(tmp + 1, seq, ord, firstrow)) return true;
+		} while (std::next_permutation(seq + 1, seq + 2));
+	}
+	else if (tmp == 2 || tmp == 5) {
+		do {
+			for (int i = 3; i <= 5; i++)
+				tmp == 2 ? ord[0][i] = seq[i] : ord[1][i] = seq[i];
+			if (Create_dfs(tmp + 1, seq, ord, firstrow)) return true;
+		} while (std::next_permutation(seq + 3, seq + 5));
+	}
+	else if (tmp == 3 || tmp == 6) {
+		do {
+			for (int i = 6; i <= 8; i++)
+				tmp == 3 ? ord[0][i] = seq[i] : ord[1][i] = seq[i];
+			if (Create_dfs(tmp + 1, seq, ord, firstrow)) return true;
+		} while (std::next_permutation(seq + 6, seq + 8));
+	}
+	return false;
 }
 
 /*

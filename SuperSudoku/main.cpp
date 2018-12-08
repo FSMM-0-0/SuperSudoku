@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 	if (strcmp(argv[1], "-c") == 0) {
 		int n = str2int(argv[2]);
 		if (n >= 1) {
-			fp = fopen("sudoku.txt", "w");
+			/*fp = fopen("sudoku.txt", "w");
 			puzzle_fp = fopen("puzzle.txt", "w");
 			
 			if (fp == NULL) {
@@ -48,15 +48,15 @@ int main(int argc, char *argv[])
 			if (puzzle_fp == NULL) {
 				printf("创建puzzle.txt文件失败\n");
 				return -1;
-			}
+			}*/
 
 			Board board(n);
-			board.Create(1, 1);
+			board.Create();
 
-			fclose(fp);
-			fclose(puzzle_fp);
-			fp = NULL;
-			puzzle_fp = NULL;
+			//fclose(fp);
+			//fclose(puzzle_fp);
+			//fp = NULL;
+			//puzzle_fp = NULL;
 			printf("生成数独终局成功\n");
 		}
 		else {

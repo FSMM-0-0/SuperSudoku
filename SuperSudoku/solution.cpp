@@ -123,35 +123,36 @@ bool Puzzle::Solution()
 	bool flag = true;
 	Node tmp(-1, -1, -1);
 	while (empty_num) {
-		while (!que.isEmpty()) {
-			tmp = que.front(); que.pop();
+		////填写唯一解空格
+		//while (!que.isEmpty()) {
+		//	tmp = que.front(); que.pop();
 
-			if (tmp.k == 0) { //一轮标记
-				if (flag) {
-					flag = false;
-					que.push(tmp);
-				}
-				else
-					break;  //无唯一确定方格
-			}
-			else {
-				int result = row[tmp.r] | column[tmp.c] | sub[tmp.k];
-				if (Num1(result) == 8) {  //找到一个唯一确定方格
-					int sure_num = getNum(result);
-					int shift = sure_num - 1;
-					puzzleboard[tmp.r][tmp.c] = sure_num;
+		//	if (tmp.k == 0) { //一轮标记
+		//		if (flag) {
+		//			flag = false;
+		//			que.push(tmp);
+		//		}
+		//		else
+		//			break;  //无唯一确定方格
+		//	}
+		//	else {
+		//		int result = row[tmp.r] | column[tmp.c] | sub[tmp.k];
+		//		if (Num1(result) == 8) {  //找到一个唯一确定方格
+		//			int sure_num = getNum(result);
+		//			int shift = sure_num - 1;
+		//			puzzleboard[tmp.r][tmp.c] = sure_num;
 
-					flag = true;
-					empty_num--;
-					column[tmp.c] |= 1 << shift;
-					row[tmp.r] |= 1 << shift;
-					sub[tmp.k] |= 1 << shift;
-				} 
-				else {  //重新加入队列
-					que.push(tmp);
-				}
-			}
-		}
+		//			flag = true;
+		//			empty_num--;
+		//			column[tmp.c] |= 1 << shift;
+		//			row[tmp.r] |= 1 << shift;
+		//			sub[tmp.k] |= 1 << shift;
+		//		} 
+		//		else {  //重新加入队列
+		//			que.push(tmp);
+		//		}
+		//	}
+		//}
 
 		if (!empty_num) break;
 		//求出所有非唯一解空格可填的数字，dfs求解
@@ -159,6 +160,7 @@ bool Puzzle::Solution()
 		int cot = 0;
 		while (!que.isEmpty()) {
 			tmp = que.front(); que.pop();
+			if (!tmp.r) continue;
 			int result = row[tmp.r] | column[tmp.c] | sub[tmp.k];
 			for (int i = 1; i <= 9; i++) {
 				if ((result & (1 << (i - 1))) == 0) {
