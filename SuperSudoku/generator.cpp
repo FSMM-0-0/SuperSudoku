@@ -30,7 +30,7 @@ void Board::Output(int ord[], int firstrow[])
 		}
 	}
 	if (num) fprintf(fp, "\n");
-	Getpuzzle();
+	//Getpuzzle();
 }
 
 //@Author:Jingjing Zhu

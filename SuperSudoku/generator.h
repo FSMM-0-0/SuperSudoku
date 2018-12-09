@@ -21,8 +21,8 @@ private:
 		"0ighcabfde"
 	};    
 	void Output(int ord[SIZE], int firstrow[SIZE]); //数独终局输出
-	void Getpuzzle(); //生成含空格的puzzle
 	bool Create_exchange(int ord[SIZE], int firstrow[SIZE]); //数独终局列交换
+	void Getpuzzle(); //生成含空格的puzzle
 public:
 	void Create(); //生成数独终局
 	Board(int n = 0) : num(n) {} 

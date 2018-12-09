@@ -70,9 +70,9 @@ int main(int argc, char *argv[])
 			printf("打开puzzle.txt文件失败\n");
 			return -1;
 		}
-		solution_fp = fopen("solution.txt", "w");
+		solution_fp = fopen("sudoku.txt", "w");
 		if (solution_fp == NULL) {
-			printf("创建solution.txt文件失败\n");
+			printf("创建sudoku.txt文件失败\n");
 			return -1;
 		}
 
