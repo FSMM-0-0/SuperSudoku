@@ -5,19 +5,28 @@
 #include <cstdio>
 #include <algorithm>
 #include <string>
+#pragma warning(disable:4996)
 
 int idx[] = { 1, 4, 7 };
 
-extern FILE *fp;
 extern FILE *puzzle_fp;
+extern FILE *generator_fp;
 
+void Generator::Output()
+{
+	if (!out_cnt) return;
+	if (fwrite(out, out_cnt, 1, generator_fp) != 1)
+		printf("输出数独终局失败\n");
+
+	out_cnt = 0;
+}
 
 //@Author:ZhuJingjing
 //@Description:输出数独终局
 //@Prameter:交换后的行列顺序ord, 第一行的模板映射关系
 //@Return:
 //@Date:208-12-7
-void Board::Output(int ord[], int firstrow[])
+void Generator::Getchessboard(int ord[], char firstrow[])
 {
 	for (int i = 1; i <= 9; i++) {
 		for (int j = 1; j <= 9; j++) {
@@ -26,10 +35,20 @@ void Board::Output(int ord[], int firstrow[])
 	}
 	for (int i = 1; i <= 9; i++) {
 		for (int j = 1; j <= 9; j++) {
-			fprintf(fp, "%d%c", chessboard[i][j], j == 9 ? '\n' : ' ');
+			out[out_cnt++] = chessboard[i][j];
+			if (out_cnt == MAXN) Output();
+			if (j == 9) 
+				out[out_cnt++] = '\n';
+			else
+				out[out_cnt++] = ' ';
+			if (out_cnt == MAXN) Output();
 		}
 	}
-	if (num) fprintf(fp, "\n");
+
+	if (num) {
+		out[out_cnt++] = '\n';
+	}
+	if (out_cnt == MAXN) Output();
 	//Getpuzzle();
 }
 
@@ -38,10 +57,9 @@ void Board::Output(int ord[], int firstrow[])
 //@Prameter:
 //@Return:
 //@Date:208-12-7
-void Board::Create()
+void Generator::Create()
 {
-	int firstrow[SIZE] = { 9, 1, 2, 3, 4, 5, 6, 7, 8 };
-	int seq[SIZE] = { 1, 2, 3 ,4, 5, 6, 7, 8, 9};
+	char firstrow[SIZE] = { "912345678" };
 	int ord[SIZE];
 	do {
 		if (Create_exchange(ord, firstrow)) break;
@@ -54,7 +72,7 @@ void Board::Create()
 //@Prameter:交换后的顺序ord,模板映射关系firstrow
 //@Return:是否生成所有终局
 //@Date:208-12-8
-bool Board::Create_exchange(int ord[], int firstrow[])
+bool Generator::Create_exchange(int ord[], char firstrow[])
 {
 	char per1[2][4] = { "123", "132" },
 		per2[6][4] = { "456", "465", "546", "564", "645", "654" },
@@ -68,8 +86,8 @@ bool Board::Create_exchange(int ord[], int firstrow[])
 			for (int k = 0; k < 6; k++) {
 				for (int kk = 0; kk < 3; kk++) ord[kk + 6] = per3[k][kk] - '0';
 
-				Output(ord, firstrow);
 				num--;
+				Getchessboard(ord, firstrow);
 				if (!num)
 					return true;
 			}
@@ -81,15 +99,15 @@ bool Board::Create_exchange(int ord[], int firstrow[])
 
 /*
 @Author:ZhuJingjing
-@Description:生成并输出quzzle
+@Description:生成并输出quzzle，用于求解测试
 @Prameter:
 @Return:
 @Date:208-12-3
 */
-void Board::Getpuzzle()
+void Generator::Getpuzzle()
 {
 	int empty[SIZE];
-	int tmp_chessboard[SIZE][SIZE];
+	char tmp_chessboard[SIZE][SIZE];
 	int sum = 0;
 
 	for (int i = 1; i <= 9; i++) {
@@ -123,7 +141,7 @@ void Board::Getpuzzle()
 			i = idx[(k - 1) / 3] + (tmp - 1) / 3;
 			j = idx[(k - 1) % 3] + (tmp - 1) % 3;
 			if (tmp_chessboard[i][j]) {
-				tmp_chessboard[i][j] = 0;
+				tmp_chessboard[i][j] = '0';
 				empty[k]--;
 			}
 		}
@@ -132,7 +150,7 @@ void Board::Getpuzzle()
 	//输出quzzle到文件
 	for (int i = 1; i <= 9; i++) {
 		for (int j = 1; j <= 9; j++) {
-			fprintf(puzzle_fp, "%d%c", tmp_chessboard[i][j], j == 9 ? '\n' : ' ');
+			fprintf(puzzle_fp, "%c%c", tmp_chessboard[i][j], j == 9 ? '\n' : ' ');
 		}
 	}
 	if (num) fprintf(puzzle_fp, "\n");

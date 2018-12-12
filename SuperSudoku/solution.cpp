@@ -1,19 +1,39 @@
 #include <cstdio>
 #include <cstring>
+#include <malloc.h>
 #include "solution.h"
+#pragma warning(disable:4996)
 
 extern FILE *solution_fp;
 
+void Puzzle::Read(char *path)
+{
+	FILE *puzzle_fp;
+	int size = 0;
+
+	puzzle_fp = fopen(path, "rb");
+	if (puzzle_fp == NULL) {
+		printf("读取数独失败\n");
+		return;
+	}
+
+	fseek(puzzle_fp, 0, SEEK_END);
+	size = ftell(puzzle_fp);
+	rewind(puzzle_fp);
+	read = (char*)malloc(sizeof(char)*size);
+
+	fread(read, 1, size, puzzle_fp);
+
+}
 
 void Puzzle::Init()
 {
-	que.makeEmpty();
-	que.push(Node(0, 0, 0));
-	empty_num = 0;
-	memset(puzzleboard, 0, sizeof(puzzleboard));
 	memset(column, 0, sizeof(column));
 	memset(row, 0, sizeof(row));
 	memset(sub, 0, sizeof(sub));
+	que.makeEmpty();
+	que.push(Node(0, 0, 0));
+	empty_num = 0;
 }
 
 /*
@@ -21,38 +41,81 @@ void Puzzle::Init()
 @Description:初始化数独求解盘
 @Prameter:第r行，第r行的内容line[]
 @Return:
-@Date:208-12-6
+@Date:2018-12-6
 */
-void Puzzle::InitBoard(int r, char line[])
+void Puzzle::InitBoard()
 {
-	if (r > 9) return;
-	int len = 17, col = 0;
+	int len = strlen(read);
+	for (int ch = 0; ch < len; ) { //依次读取每一个字符
 
-	for (int i = 0; i < len; i += 2) {
-		puzzleboard[r][++col] = line[i] - '0';
+		//初始化当前数独
+		Init();
 
-		int k = (r - 1) / 3 * 3 + (col - 1) / 3 + 1;
-		if (line[i] == '0') {
-			que.push(Node(r, col, k));
-			empty_num++;
+		//读入一个数独
+		for (int i = 1; i <= 9; i++) {
+			for (int j = 1; j <= 9; j++) {
+
+				puzzleboard[i][j] = read[ch];
+
+				int k = (i - 1) / 3 * 3 + (j - 1) / 3 + 1;
+				if (puzzleboard[i][j] == '0') {
+					que.push(Node(i, j, k));
+					empty_num++;
+				}
+				else {
+					int shift = puzzleboard[i][j] - '0' - 1;
+					row[i] |= 1 << shift;
+					column[j] |= 1 << shift;
+					sub[k] |= 1 << shift;
+				}
+
+				ch++;
+				while (!(read[ch] >= '0' && read[ch] <= '9') && ch < len) ch++;
+
+			}
 		}
-		else {
-			int shift = puzzleboard[r][col] - 1;
-			row[r] |= 1 << shift;
-			column[col] |= 1 << shift;
-			sub[k] |= 1 << shift;
+
+		//求解当前数独
+		Solution();
+		GetBoard();
+		if (ch < len)
+			out[out_cnt++] = '\n';
+		if (out_cnt == MAXN) Output();
+	}
+
+	free(read);
+}
+
+
+/*
+@Author:ZhuJingjing
+@Description:将求解后的数独输入缓存out
+@Prameter:
+@Return:
+@Date:2018-12-11
+*/
+void Puzzle::GetBoard()
+{
+	for (int i = 1; i <= 9; i++) {
+		for (int j = 1; j <= 9; j++) {
+			out[out_cnt++] = puzzleboard[i][j];
+			if (out_cnt == MAXN) Output();
+			if (j == 9)
+				out[out_cnt++] = '\n';
+			else
+				out[out_cnt++] = ' ';
+			if (out_cnt == MAXN) Output();
 		}
-		
 	}
 }
 
 void Puzzle::Output()
 {
-	for (int i = 1; i <= 9; i++) {
-		for (int j = 1; j <= 9; j++) {
-			fprintf(solution_fp, "%d%c", puzzleboard[i][j], j == 9 ? '\n' : ' ');
-		}
-	}
+	if (!out_cnt) return;
+	if (fwrite(out, out_cnt, 1, solution_fp) != 1)
+		printf("输出数独求解失败\n");
+
+	out_cnt = 0;
 }
 
 //返回1的个数
@@ -82,7 +145,7 @@ int getNum(int x)
 @Description:dfs求解
 @Prameter:第tmp个空格，第tmp个空格点信息node[]
 @Return:是否搜到可行解
-@Date:208-12-6
+@Date:2018-12-6
 */
 bool Puzzle::dfs(int tmp, Node node[])
 {
@@ -92,14 +155,14 @@ bool Puzzle::dfs(int tmp, Node node[])
 		int shift = dig - 1;
 
 		if (!((sub[node[tmp].k] >> shift) & 1) && !((row[node[tmp].r] >> shift) & 1) && !((column[node[tmp].c] >> shift) & 1)) {
-			puzzleboard[node[tmp].r][node[tmp].c] = dig;
+			puzzleboard[node[tmp].r][node[tmp].c] = dig + '0';
 			column[node[tmp].c] |= 1 << shift;
 			row[node[tmp].r] |= 1 << shift;
 			sub[node[tmp].k] |= 1 << shift;
 			empty_num--;
 
 			if (dfs(tmp + 1, node)) return true;
-			puzzleboard[node[tmp].r][node[tmp].c] = 0;
+			puzzleboard[node[tmp].r][node[tmp].c] = '0';
 			sub[node[tmp].k] ^= 1 << shift;
 			row[node[tmp].r] ^= 1 << shift;
 			column[node[tmp].c] ^= 1 << shift;
@@ -116,9 +179,9 @@ bool Puzzle::dfs(int tmp, Node node[])
 @Description:求解数独局，先填充唯一解，再调用dfs
 @Prameter:
 @Return:
-@Date:208-12-6
+@Date:2018-12-6
 */
-bool Puzzle::Solution()
+void Puzzle::Solution()
 {
 	bool flag = true;
 	Node tmp(-1, -1, -1);
@@ -140,7 +203,7 @@ bool Puzzle::Solution()
 				if (Num1(result) == 8) {  //找到一个唯一确定方格
 					int sure_num = getNum(result);
 					int shift = sure_num - 1;
-					puzzleboard[tmp.r][tmp.c] = sure_num;
+					puzzleboard[tmp.r][tmp.c] = sure_num + '0';
 
 					flag = true;
 					empty_num--;
@@ -172,5 +235,5 @@ bool Puzzle::Solution()
 		}
 		dfs(1, node);
 	}
-	return true;
+
 }

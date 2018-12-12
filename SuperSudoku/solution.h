@@ -2,6 +2,10 @@
 #define __SOLUTION_H__
 
 #define SIZE 10
+#define MAXN 1000000
+
+extern char out[MAXN];
+extern int out_cnt;
 
 template<class T>
 class Queue
@@ -40,9 +44,11 @@ public:
 class Puzzle
 {
 private:
-	int puzzleboard[SIZE][SIZE];  //数独求解盘
+	char puzzleboard[SIZE][SIZE];  //数独求解盘
 	int column[SIZE], row[SIZE], sub[SIZE]; //判断合法
 	int empty_num;  //剩余空的数量 
+	char *read; //求解读入缓存
+	int read_cnt;
 	class Node {  //空格位置
 	private:
 	public:
@@ -53,13 +59,16 @@ private:
 		Node() : r(0), c(0), k(0), maybe_num(0){}
 	};
 	Queue<Node> que;  //求解显性+隐性唯一解的空格队列
+	void Solution(); //数独求解 1.唯一解填充 2.dfs可行解
+	void Init();  //对每一盘数独读取前进行初始化
+	bool dfs(int tmp, Node node[]); //dfs每个空格可以填的数
+	void GetBoard(); //将求解后的数独输入缓存
 
 public:
-	void InitBoard(int row, char line[]); //board赋值
-	void Init(); 
+	void InitBoard(); //board赋值
 	void Output(); //输出到文件
-	bool Solution(); //数独求解 1.唯一解填充 2.dfs可行解
-	bool dfs(int tmp, Node node[]); //dfs每个空格可以填的数
+	void Read(char *path); //读入求解文件
+	Puzzle() : read_cnt(0) {}
 };
 
 
