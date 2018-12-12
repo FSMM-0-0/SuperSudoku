@@ -14,11 +14,9 @@ extern FILE *generator_fp;
 
 void Generator::Output()
 {
-	if (!out_cnt) return;
 	if (fwrite(out, out_cnt, 1, generator_fp) != 1)
 		printf("Êä³öÊı¶ÀÖÕ¾ÖÊ§°Ü\n");
-
-	out_cnt = 0;
+	delete[] out;
 }
 
 //@Author:ZhuJingjing
@@ -36,19 +34,16 @@ void Generator::Getchessboard(int ord[], char firstrow[])
 	for (int i = 1; i <= 9; i++) {
 		for (int j = 1; j <= 9; j++) {
 			out[out_cnt++] = chessboard[i][j];
-			if (out_cnt == MAXN) Output();
 			if (j == 9) 
 				out[out_cnt++] = '\n';
 			else
 				out[out_cnt++] = ' ';
-			if (out_cnt == MAXN) Output();
 		}
 	}
 
 	if (num) {
 		out[out_cnt++] = '\n';
 	}
-	if (out_cnt == MAXN) Output();
 	//Getpuzzle();
 }
 
@@ -59,6 +54,9 @@ void Generator::Getchessboard(int ord[], char firstrow[])
 //@Date:208-12-7
 void Generator::Create()
 {
+	int size = 18 * 9 * num + num + 10;
+	out = new char[size];
+
 	char firstrow[SIZE] = { "912345678" };
 	int ord[SIZE];
 	do {

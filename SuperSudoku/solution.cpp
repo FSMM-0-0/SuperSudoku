@@ -6,7 +6,7 @@
 
 extern FILE *solution_fp;
 
-void Puzzle::Read(char *path)
+bool Puzzle::Read(char *path)
 {
 	FILE *puzzle_fp;
 	int size = 0;
@@ -14,16 +14,19 @@ void Puzzle::Read(char *path)
 	puzzle_fp = fopen(path, "rb");
 	if (puzzle_fp == NULL) {
 		printf("读取数独失败\n");
-		return;
+		return false;
 	}
 
 	fseek(puzzle_fp, 0, SEEK_END);
 	size = ftell(puzzle_fp);
 	rewind(puzzle_fp);
-	read = (char*)malloc(sizeof(char)*size);
+
+	read = new char[size];
+	out = new char[size];
 
 	fread(read, 1, size, puzzle_fp);
-
+	fclose(puzzle_fp);
+	return true;
 }
 
 void Puzzle::Init()
@@ -71,7 +74,7 @@ void Puzzle::InitBoard()
 
 				ch++;
 				while (!(read[ch] >= '0' && read[ch] <= '9') && ch < len) ch++;
-
+				
 			}
 		}
 
@@ -80,10 +83,7 @@ void Puzzle::InitBoard()
 		GetBoard();
 		if (ch < len)
 			out[out_cnt++] = '\n';
-		if (out_cnt == MAXN) Output();
 	}
-
-	free(read);
 }
 
 
@@ -99,23 +99,20 @@ void Puzzle::GetBoard()
 	for (int i = 1; i <= 9; i++) {
 		for (int j = 1; j <= 9; j++) {
 			out[out_cnt++] = puzzleboard[i][j];
-			if (out_cnt == MAXN) Output();
 			if (j == 9)
 				out[out_cnt++] = '\n';
 			else
 				out[out_cnt++] = ' ';
-			if (out_cnt == MAXN) Output();
 		}
 	}
 }
 
 void Puzzle::Output()
 {
-	if (!out_cnt) return;
 	if (fwrite(out, out_cnt, 1, solution_fp) != 1)
 		printf("输出数独求解失败\n");
-
-	out_cnt = 0;
+	delete[] read;
+	delete[] out;
 }
 
 //返回1的个数

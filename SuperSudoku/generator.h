@@ -2,14 +2,13 @@
 #define __GENERATOR_H__
 
 #define SIZE 10
-#define MAXN 1000000
-extern char out[MAXN];
-extern int out_cnt;
 
 class Generator
 {
 private:
 	char chessboard[SIZE][SIZE];  //数独终局盘
+	char *out;
+	int out_cnt;
 	int num;  //数独终局数量
 	//数独模板
 	char modle[11][11] = { "0",
@@ -29,7 +28,7 @@ private:
 public:
 	void Create(); //生成数独终局
 	void Output(); //输出数独终局到文件sudoku.txt
-	Generator(int n = 0) : num(n) {} 
+	Generator(int n = 0) : num(n), out_cnt(0) {} 
 };
 
 #endif // !__GENERATOR_H__

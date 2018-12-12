@@ -2,10 +2,6 @@
 #define __SOLUTION_H__
 
 #define SIZE 10
-#define MAXN 1000000
-
-extern char out[MAXN];
-extern int out_cnt;
 
 template<class T>
 class Queue
@@ -48,6 +44,8 @@ private:
 	int column[SIZE], row[SIZE], sub[SIZE]; //判断合法
 	int empty_num;  //剩余空的数量 
 	char *read; //求解读入缓存
+	char *out; //输出缓存
+	int out_cnt;
 	int read_cnt;
 	class Node {  //空格位置
 	private:
@@ -67,8 +65,8 @@ private:
 public:
 	void InitBoard(); //board赋值
 	void Output(); //输出到文件
-	void Read(char *path); //读入求解文件
-	Puzzle() : read_cnt(0) {}
+	bool Read(char *path); //读入求解文件
+	Puzzle() : read_cnt(0), out_cnt(0) {}
 };
 
 
