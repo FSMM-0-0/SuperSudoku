@@ -55,6 +55,13 @@ private:
 		int maybe_num;  //空格位置可以填的数的数量
 		Node(int _r, int _c, int _k, int _maybe_num = 0) : r(_r), c(_c), k(_k), maybe_num(_maybe_num){}
 		Node() : r(0), c(0), k(0), maybe_num(0){}
+
+		bool operator < (const Node &x) const
+		{
+			if (maybe_num == x.maybe_num)
+				return k < x.k;
+			return maybe_num < x.maybe_num;
+		}
 	};
 	Queue<Node> que;  //求解显性+隐性唯一解的空格队列
 	void Solution(); //数独求解 1.唯一解填充 2.dfs可行解

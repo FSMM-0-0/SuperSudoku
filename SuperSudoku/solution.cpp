@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstring>
+#include <algorithm>
 #include <malloc.h>
 #include "solution.h"
 #pragma warning(disable:4996)
@@ -230,6 +231,7 @@ void Puzzle::Solution()
 
 			node[++cot] = tmp;
 		}
+		std::sort(node + 1, node + cot + 1);
 		dfs(1, node);
 	}
 
