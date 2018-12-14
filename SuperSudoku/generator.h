@@ -1,5 +1,6 @@
 #ifndef __GENERATOR_H__
 #define __GENERATOR_H__
+#include <cstring>
 
 #define SIZE 10
 
@@ -28,7 +29,11 @@ private:
 public:
 	void Create(); //生成数独终局
 	void Output(); //输出数独终局到文件sudoku.txt
-	Generator(int n = 0) : num(n), out_cnt(0) {} 
+	Generator(int n = 0) : num(n), out_cnt(0) 
+	{
+		memset(chessboard, 0, sizeof(chessboard));
+		out = NULL;
+	} 
 };
 
 #endif // !__GENERATOR_H__

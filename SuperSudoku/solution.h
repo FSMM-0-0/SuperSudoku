@@ -53,8 +53,14 @@ private:
 		int r, c, k; //空格位置的行、列、宫
 		int maybe[SIZE]; //空格位置可以填的数
 		int maybe_num;  //空格位置可以填的数的数量
-		Node(int _r, int _c, int _k, int _maybe_num = 0) : r(_r), c(_c), k(_k), maybe_num(_maybe_num){}
-		Node() : r(0), c(0), k(0), maybe_num(0){}
+		Node(int _r, int _c, int _k, int _maybe_num = 0) : r(_r), c(_c), k(_k), maybe_num(_maybe_num)
+		{
+			memset(maybe, 0, sizeof(maybe));
+		}
+		Node() : r(0), c(0), k(0), maybe_num(0)
+		{
+			memset(maybe, 0, sizeof(maybe));
+		}
 
 		bool operator < (const Node &x) const
 		{
@@ -73,7 +79,15 @@ public:
 	void InitBoard(); //board赋值
 	void Output(); //输出到文件
 	bool Read(char *path); //读入求解文件
-	Puzzle() : read_cnt(0), out_cnt(0) {}
+	Puzzle() : read_cnt(0), out_cnt(0), empty_num(0)
+	{
+		out = NULL;
+		read = NULL;
+		memset(puzzleboard, 0, sizeof(puzzleboard));
+		memset(column, 0, sizeof(column));
+		memset(row, 0, sizeof(row));
+		memset(sub, 0, sizeof(sub));
+	}
 };
 
 
