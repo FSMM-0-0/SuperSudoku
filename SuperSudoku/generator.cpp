@@ -57,6 +57,7 @@ void Generator::Create()
 	int size = 18 * 9 * num + num + 10;
 	out = new char[size];
 
+	//Ñ§ºÅ(2+6)%9+1=9
 	char firstrow[SIZE] = { "912345678" };
 	int ord[SIZE];
 	do {

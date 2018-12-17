@@ -40,7 +40,6 @@ public:
 class Puzzle
 {
 private:
-	char puzzleboard[SIZE][SIZE];  //数独求解盘
 	int column[SIZE], row[SIZE], sub[SIZE]; //判断合法
 	int empty_num;  //剩余空的数量 
 	char *read; //求解读入缓存
@@ -76,6 +75,7 @@ private:
 	void GetBoard(); //将求解后的数独输入缓存
 
 public:
+	char puzzleboard[SIZE][SIZE];  //数独求解盘
 	void InitBoard(); //board赋值
 	void Output(); //输出到文件
 	bool Read(char *path); //读入求解文件

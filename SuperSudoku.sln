@@ -5,10 +5,9 @@ VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SuperSudoku", "SuperSudoku\SuperSudoku.vcxproj", "{A4695518-B988-44BA-99B9-1B137A9F444C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcxproj", "{5295184C-902E-4868-B9A4-D79D7C87A07F}"
+EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
@@ -24,12 +23,23 @@ Global
 		{A4695518-B988-44BA-99B9-1B137A9F444C}.Release|x64.Build.0 = Release|x64
 		{A4695518-B988-44BA-99B9-1B137A9F444C}.Release|x86.ActiveCfg = Release|Win32
 		{A4695518-B988-44BA-99B9-1B137A9F444C}.Release|x86.Build.0 = Release|Win32
+		{5295184C-902E-4868-B9A4-D79D7C87A07F}.Debug|x64.ActiveCfg = Debug|x64
+		{5295184C-902E-4868-B9A4-D79D7C87A07F}.Debug|x64.Build.0 = Debug|x64
+		{5295184C-902E-4868-B9A4-D79D7C87A07F}.Debug|x86.ActiveCfg = Debug|Win32
+		{5295184C-902E-4868-B9A4-D79D7C87A07F}.Debug|x86.Build.0 = Debug|Win32
+		{5295184C-902E-4868-B9A4-D79D7C87A07F}.Release|x64.ActiveCfg = Release|x64
+		{5295184C-902E-4868-B9A4-D79D7C87A07F}.Release|x64.Build.0 = Release|x64
+		{5295184C-902E-4868-B9A4-D79D7C87A07F}.Release|x86.ActiveCfg = Release|Win32
+		{5295184C-902E-4868-B9A4-D79D7C87A07F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BD9CD209-F74E-4420-9EC5-D7D176CDB32A}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

@@ -232,7 +232,9 @@ void Puzzle::Solution()
 			node[++cot] = tmp;
 		}
 		std::sort(node + 1, node + cot + 1);
-		dfs(1, node);
+		if (!dfs(1, node)) {
+			printf("有不合法数独\n");
+		}
 	}
 
 }
