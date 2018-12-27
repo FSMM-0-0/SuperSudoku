@@ -8,7 +8,7 @@ FILE *solution_fp = NULL;
 
 int test_input_flag = 0;
 
-//ÅĞ¶ÏÊäÈëÊı¶ÀÊıÁ¿´óĞ¡nÊÇ·ñºÏ·¨
+//åˆ¤æ–­è¾“å…¥æ•°ç‹¬æ•°é‡å¤§å°næ˜¯å¦åˆæ³•
 int str2int(char *s)
 {
 	int len = strlen(s);
@@ -18,11 +18,13 @@ int str2int(char *s)
 			x = x * 10 + s[i] - '0';
 		}
 		else {
-			test_input_flag = 2; //ÊäÈëÖÕ¾Ö¸öÊıº¬ÓĞÆäËû×Ö·û
+			test_input_flag = 2; //è¾“å…¥ç»ˆå±€ä¸ªæ•°å«æœ‰å…¶ä»–å­—ç¬¦
+			printf("è¯·è¾“å…¥åˆæ³•çš„æ•°ç‹¬ç»ˆå±€ä¸ªæ•°\n");
 			return -1;
 		}
 		if (x > 1000000) {
-			test_input_flag = 3; //ÊäÈëÖÕ¾Ö¸öÊı´óÓÚ1000000
+			test_input_flag = 3; //è¾“å…¥ç»ˆå±€ä¸ªæ•°å¤§äº1000000
+			printf("è¾“å…¥æ•°ç‹¬ç»ˆå±€ä¸ªæ•°è¿‡å¤§\n");
 			return -1;
 		}
 	}
@@ -36,20 +38,20 @@ void work(char *argv[])
 		char *number = NULL;
 		number = argv[2];
 		if (number == NULL) {
-			test_input_flag = 1;  //²ÎÊıÖ»ÓĞ-c£¬Ã»ÓĞÊäÈëÖÕ¾Ö¸öÊı
-			printf("ÇëÊäÈëÊı¶ÀÖÕ¾Ö¸öÊı\n");
+			test_input_flag = 1;  //å‚æ•°åªæœ‰-cï¼Œæ²¡æœ‰è¾“å…¥ç»ˆå±€ä¸ªæ•°
+			printf("è¯·è¾“å…¥æ•°ç‹¬ç»ˆå±€ä¸ªæ•°\n");
 			return;
 		}
 		n = str2int(number);
 		if (n >= 1) {
-			test_input_flag = 5; //Éú³ÉÖÕ¾ÖÃüÁîºÏ·¨
+			test_input_flag = 5; //ç”Ÿæˆç»ˆå±€å‘½ä»¤åˆæ³•
 			//if ((puzzle_fp = fopen("puzzle.txt", "w+")) == NULL) {
-			//	printf("´´½¨puzzle.txtÎÄ¼şÊ§°Ü\n");
+			//	printf("åˆ›å»ºpuzzle.txtæ–‡ä»¶å¤±è´¥\n");
 			//	return -1;
 			//}
 
 			if ((generator_fp = fopen("sudoku.txt", "w+")) == NULL) {
-				printf("´´½¨Êı¶ÀÖÕ¾ÖÎÄ¼şÊ§°Ü\n");
+				printf("åˆ›å»ºæ•°ç‹¬ç»ˆå±€æ–‡ä»¶å¤±è´¥\n");
 				return;
 			}
 
@@ -58,46 +60,46 @@ void work(char *argv[])
 			board.Output();
 
 			fclose(generator_fp);
-			printf("Êı¶ÀÖÕ¾ÖÉú³É³É¹¦\n");
+			printf("æ•°ç‹¬ç»ˆå±€ç”ŸæˆæˆåŠŸ\n");
 
 			//fclose(puzzle_fp);
 			//puzzle_fp = NULL;
 
 		}
 		else if (n == 0){
-			test_input_flag = 4; //ÖÕ¾ÖÊıÁ¿Îª0
-			printf("ÇëÊäÈëÕıÈ·µÄÊı¶ÀÖÕ¾ÖÊıÁ¿£¬·¶Î§ÊÇ1¡ÜN¡Ü1000000\n");
+			test_input_flag = 4; //ç»ˆå±€æ•°é‡ä¸º0
+			printf("è¯·è¾“å…¥æ­£ç¡®çš„æ•°ç‹¬ç»ˆå±€æ•°é‡ï¼ŒèŒƒå›´æ˜¯1â‰¤Nâ‰¤1000000\n");
 		}
 	}
 	else if (strcmp(argv[1], "-s") == 0) {
 		char *path = NULL;
 		path = argv[2];
 		if (path == NULL) {
-			test_input_flag = 6; //Ã»ÓĞÊäÈëÇó½âÊı¶ÀÎÄ¼şÂ·¾¶
-			printf("ÇëÊäÈëÊı¶ÀÎÄ¼ş\n");
+			test_input_flag = 6; //æ²¡æœ‰è¾“å…¥æ±‚è§£æ•°ç‹¬æ–‡ä»¶è·¯å¾„
+			printf("è¯·è¾“å…¥æ•°ç‹¬æ–‡ä»¶\n");
 			return;
 		}
 
 		if ((solution_fp = fopen("sudoku.txt", "w+")) == NULL) {
-			printf("´´½¨Êı¶ÀÇó½âÎÄ¼şÊ§°Ü\n");
+			printf("åˆ›å»ºæ•°ç‹¬æ±‚è§£æ–‡ä»¶å¤±è´¥\n");
 			return;
 		}
 
 		Puzzle puzzle;
 		if (!puzzle.Read(path)) {
-			test_input_flag = 7; //Çó½âÊı¶ÀÎÄ¼şÂ·¾¶²»ºÏ·¨
+			test_input_flag = 7; //æ±‚è§£æ•°ç‹¬æ–‡ä»¶è·¯å¾„ä¸åˆæ³•
 			return;
 		}
 		puzzle.InitBoard();
 		puzzle.Output();
 
 		fclose(solution_fp);
-		printf("Êı¶ÀÇó½â³É¹¦\n");
-		test_input_flag = 8; //Çó½âÊı¶ÀÃüÁîºÏ·¨
+		printf("æ•°ç‹¬æ±‚è§£æˆåŠŸ\n");
+		test_input_flag = 8; //æ±‚è§£æ•°ç‹¬å‘½ä»¤åˆæ³•
 
 	}
 	else {
-		test_input_flag = 9; //ÃüÁî²ÎÊıÓĞÎó
-		printf("ÇëÊäÈëÕıÈ·µÄÃüÁî²ÎÊı\n");
+		test_input_flag = 9; //å‘½ä»¤å‚æ•°æœ‰è¯¯
+		printf("è¯·è¾“å…¥æ­£ç¡®çš„å‘½ä»¤å‚æ•°\n");
 	}
 }
