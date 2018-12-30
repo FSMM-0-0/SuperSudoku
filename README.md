@@ -40,3 +40,6 @@
 * visual studio 2017
 * qt 5.12.0
 * 语言C++
+
+## 运行环境
+Microsoft .NET framework
